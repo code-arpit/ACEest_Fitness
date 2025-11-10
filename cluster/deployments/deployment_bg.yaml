@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aceest-fitness-blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aceest-fitness
+      env: blue
+  template:
+    metadata:
+      labels:
+        app: aceest-fitness
+        env: blue
+    spec:
+      containers:
+        - name: fitness-container
+          image: localhost/aceest_fitness:blue
+          ports:
+            - containerPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aceest-fitness-green
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aceest-fitness
+      env: green
+  template:
+    metadata:
+      labels:
+        app: aceest-fitness
+        env: green
+    spec:
+      containers:
+        - name: fitness-container
+          image: localhost/aceest_fitness:green
+          ports:
+            - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aceest-fitness-service
+spec:
+  selector:
+    app: aceest-fitness
+    env: blue # Change to green to switch traffic
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
